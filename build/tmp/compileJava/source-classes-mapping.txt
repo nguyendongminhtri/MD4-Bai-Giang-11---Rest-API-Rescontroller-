@@ -1,5 +1,5 @@
-WebConfig.java
- WebConfig
+controller/HomeController.java
+ controller.HomeController
 model/Customer.java
  model.Customer
 AppConfig.java
@@ -10,6 +10,8 @@ service/impl/CustomerServiceImpl.java
  service.impl.CustomerServiceImpl
 service/ICustomerService.java
  service.ICustomerService
+WebConfig.java
+ WebConfig
 dto/ResponseMessenger.java
  dto.ResponseMessenger
 controller/CustomerController.java

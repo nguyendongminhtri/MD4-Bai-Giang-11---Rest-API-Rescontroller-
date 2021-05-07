@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import service.impl.CustomerServiceImpl;
 
 import javax.validation.Valid;
@@ -25,6 +26,12 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(customerList, HttpStatus.OK);
+    }
+    @GetMapping("/list")
+    public ModelAndView showListCustomer(){
+        ModelAndView modelAndView = new ModelAndView("/customer/list");
+        modelAndView.addObject("listCustomer",customerService.findAll());
+        return modelAndView;
     }
    @GetMapping("/{id}")
     public ResponseEntity<?> detailCustomer(@PathVariable Long id){

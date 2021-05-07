@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <style>
+    table {
+      width: 100%;
+    }
+  </style>
+    <meta charset="UTF-8">
+    <title>List Customer</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    //get data from server
+    function addCustomer(){
+      let name=$('#name').val();
+      let age = $('#age').val();
+      let newCustomer = {
+        name: name,
+        age: age
+      }
+      //Call ajax
+      $.ajax({
+        headers : {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        type: "POST",
+        url: "/api/customer",
+        data: JSON.stringify(newCustomer), //doc kieu du lieu JSON
+        success: afterCreateSuccess(),
+        success: alert('Create success!!'),
+        success: console.log('Create success!!!'),
+        success: function (){
+          location.reload()
+        }
+      });
+      event.preventDefault();
+    }
+    function afterCreateSuccess(){
+      $.ajax({
+        type: "GET",
+        url: "/api/customer",
+        success : function (data){
+          let content = '<tr>\n'+
+                  '<th>STT</th>\n'+
+                  '<th>Name</th>\n'+
+                  '<th>Age</th>\n'+
+                  '<th>Delete</th>\n'+
+                  '</tr>';
+          for (let i=0; i< data.length;i++){
+            content += getListCustomer(data[i])
+          }
+          document.getElementById('customerList').innerHTML = content;
+        }
+      })
+    }
+    function getListCustomer(customer){
+      return `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.age}</td><td><a class="deleteCustomer" href="${customer.id}"</td>`
+    }
+    $(document).ready(function () {
+      //sư kiện nào thực hiện Ajax
+      $('.deleteCustomer').click(function (event) {
+        //lay du lieu
+        let a = $(this);
+        let customerId = a.attr("href");
+        // goi ajax
+        $.ajax({
+          type: "DELETE",
+          //tên API
+          url: `/api/customer/${customerId}`,
+          //xử lý khi thành công
+          success: function () {
+            a.parent().parent().remove();
+          }
+
+        });
+        //chặn sự kiện mặc định của thẻ
+        event.preventDefault();
+      });
+    })
+  </script>
+</head>
+
+<body>
+<form>
+  <label>Name</label>
+  <input type="text" id="name" placeholder="name ....">
+  <label>Age</label>
+  <input type="text" id="age" placeholder="age ....">
+  <button type="submit" onclick="addCustomer()">Create Customer</button>
+</form>
+<table id="customerList" border="1">
+  <tr>
+    <th>STT</th>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Delete</th>
+  </tr>
+  <tr th:each="c:${listCustomer}">
+    <td th:text="${c.id}"></td>
+    <td th:text="${c.name}"></td>
+    <td th:text="${c.age}"></td>
+    <td><a class="deleteCustomer" th:href="${c.getId()}">Delete</a> </td>
+  </tr>
+</table>
+</body>
+</html>
